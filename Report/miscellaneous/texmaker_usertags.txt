@@ -1,0 +1,79 @@
+# Can remove eventually once all comps are synched.
+
+1. fig
+
+\begin{figure}[h!]\centering
+\includegraphics[width=8cm]{PATH}
+\label{LABEL}
+\caption{CAPTION}
+\end{figure}
+
+
+2. sfig2
+
+\begin{figure}[h!]\centering
+\subfigure[]{\includegraphics[width=6.5cm]{PATH1} }
+\subfigure[]{\includegraphics[width=6.5cm]{PATH2} }
+\label{LABEL}
+\caption{(a) ...  (b) ...}
+\end{figure}
+
+
+3. sfig3:
+
+\begin{figure}[h!]\centering
+\subfigure[]{\includegraphics[width=6.5cm]{PATH1
+} }
+\subfigure[]{\includegraphics[width=6.5cm]{PATH2} }
+\subfigure[]{\includegraphics[width=8cm]{PATH3} }
+\label{LABEL}
+\caption{(a) ...  (b) ... (c) ...}
+\end{figure}
+
+4.  sfig4
+
+\begin{figure}[h!]\centering
+\subfigure[]{\includegraphics[width=6.5cm]{PATH1} }
+\subfigure[]{\includegraphics[width=6.5cm]{PATH2} }
+\subfigure[]{\includegraphics[width=6.5cm]{PATH3} }
+\subfigure[]{\includegraphics[width=6.5cm]{PATH4} }
+\label{LABEL}
+\caption{(a) ...  (b) ... (c) ... (d) ...}
+\end{figure}
+
+5. 3x3 Table, bold column
+
+\begin{center}
+\begin{tabular}{| c | c | c |}
+ \hline
+ {\bf foo1} & bar1 & baz1 \\ \hline
+ {\bf foo2} & bar2 & baz2 \\ \hline
+ {\bf foo3} & bar3 & baz3 \\ \hline
+\end{tabular}
+\end{center}
+
+6. 3x3 Table, bold top row
+
+\begin{center}
+\begin{tabular}{| c | c | c |}
+ \hline
+ {\bf foo1} & {\bf bar1} & {\bf baz1} \\ \hline
+  foo2 & bar2 & baz2 \\ \hline
+  foo3 & bar3 & baz3 \\ \hline
+\end{tabular}
+\end{center}
+
+7. items:
+
+\begin{itemize}
+\item{}
+\item{}
+\end{itemize}
+
+
+8. enum:
+
+\begin{enumerate}
+\item{}
+\item{}
+\end{enumerate}

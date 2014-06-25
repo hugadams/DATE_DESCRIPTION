@@ -1,0 +1,304 @@
+\documentclass{article}
+
+%%% IMPORTS %%%
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{import}
+\usepackage{changepage} %For forcing table adjustmetns
+\usepackage{gensymb}
+\usepackage{xcolor}
+\usepackage[pdftex]{graphicx}
+\usepackage{scrextend}
+\usepackage{pdfpages}
+\graphicspath{ {./images/} }
+\usepackage{subfigure}
+\usepackage[scriptsize]{caption}   % Set figure captions
+\usepackage{changepage} 
+\usepackage{multicol}   %May be deprecated
+\usepackage{enumitem}
+\usepackage{xifthen}  %if/else for optional args
+\usepackage{geometry}
+\usepackage{hyperref} % For links in appendix
+\hypersetup{
+    colorlinks=true, %This is best setup for not getting werid behavior
+    linkcolor=black,
+    citecolor=black,
+    filecolor=black,
+    urlcolor=blue, 
+    }
+
+%%% INPUT SEVERAL COMMANDS FROM miscellaneous/commands.tex
+\input{miscellaneous/commands.tex}
+
+%%% Relative paths for composite document integration %%%
+\newcommand*{\Analysis}{../Analysis/}
+\newcommand*{\SEM}{../SEM/}
+\newcommand*{\Datafiles}{../Datafiles/}
+\newcommand*{\FiberData}{../../../}
+\newcommand*{\Papers}{../../../../Papers/}
+
+%%% Various hyperlinks to targets distributed in document
+\newcommand*{\refsem}{\hyperlink{sem}{\color{blue} \ttfamily Introduction}} 
+\newcommand*{\refexp}{\hyperlink{exp}{\color{blue} \ttfamily Experimental}} 
+\newcommand*{\refintro}{\hyperlink{intro}{\color{blue} \ttfamily SEM}} 
+\newcommand*{\refspec}{\hyperlink{spec}{\color{blue} \ttfamily Spectrometer Protocol}} 
+\newcommand*{\refresults}{\hyperlink{results}{\color{blue} \ttfamily Results}} 
+\newcommand*{\refrelated}{\hyperlink{related}{\color{blue} \ttfamily Related Reports}} 
+
+% COVERAGE TABLE
+\newcommand*{\refcovtable}{\hyperlink{covtable}{\color{blue} \ttfamily Coverage Table}} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% BEGIN DOCUMENT  %%%
+%%%%%%%%%%%%%%%%%%%%%%%%    
+      
+\begin{document}
+\noindent
+
+\begin{center}
+
+\includegraphics[width=0.4\textwidth]{gwulogo}~\\[1cm]
+
+\textsc{\LARGE The George Washington University\vspace{.2cm}
+Physics Department}\\[.4cm]
+
+{\large \today}
+\vspace{.5cm}
+
+\hrule \vspace{.4cm}
+{ \huge \bfseries  
+
+%%% TITLE %%%%
+UNTITLED
+
+\vspace{0.2cm} }
+\hrule \vspace{1.5cm}
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Author:}\\
+
+%%%% AUTHOR NAME %%%%%
+\fancyname{Adam}{Hughes}\footnotemark[1]
+
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Advisor:} \\
+\fancyname{Dr.~Mark}{Reeves}\footnotemark[2]
+\end{flushright}
+\end{minipage}
+\end{center}
+
+\vspace{.4cm}
+
+%%%%% ABSTRACT %%%%%%
+\abstract{\fillin{
+Abstract goes here
+}}
+
+\vfill
+{\noindent {\bf Contributors:}} 
+%%%%% CONTRIBUTERS %%%%%%
+\fancyname{Zhaowen}{Liu}, \fancyname{Maryam}{Raftari}
+
+\footnotetext[1]{hugadams@gwmail.gwu.edu}
+\footnotetext[2]{reevesme@gwu.edu}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\hypertarget{intro}{\section{Introduction}}
+
+\fillin{Explanation of experiment and goals}
+
+\subsection{Hypothesized results}
+\fillin{What do you expect to happen?}
+
+\hypertarget{exp}{\section{Experimental}}
+
+\begin{center}
+\begin{tabular}{| c | c |}
+ \hline
+ {\bf Prep. Date} & XX/XX/2014 \\ \hline
+ {\bf Prepped by} & Adam Hughes \\ \hline
+
+ {\bf Fiber type} & GIF-625 \\ \hline
+ {\bf \# Fibers} & 4  \\ \hline
+ {\bf HF Etching time} & N/A \\ \hline
+ {\bf Silane type} & TMSDE \\ \hline
+ {\bf Annealing time/temp} & 30min 125$^\circ$C  \\ \hline
+\end{tabular}
+\end{center}
+
+\vspace{.3cm}
+
+\fillin{Any details about the experiment} 
+
+\subsection{Exp: {\color{blue} What went particularly well}}
+
+\begin{itemize}
+\item{Nothing to remark}
+\end{itemize}
+
+\subsection{Exp: {\color{red} What went particularly poorly}}
+
+\begin{itemize}
+\item{Nothing to remark}
+\end{itemize}
+
+\hypertarget{sem}{\section{SEM}}
+
+\begin{center}
+\begin{tabular}{| c | c |}
+ \hline
+ {\bf Date of Imaging} & XX/XX/2013 \\ \hline
+ {\bf \# Fibers Imaged} & X \\ \hline
+ {\bf Microscope Performance} & Good \\ \hline
+ {\bf Signs of contamination} & No  \\ \hline
+ {\bf Good cleaves} & X/Total  \\ \hline %X out of Y
+\end{tabular}
+\end{center}
+\gap
+
+\subsection{SEM: Notes on each fiber}
+
+% Copy paste below portion once for each image
+\gap
+\blf{Fiber 1:}
+\bit
+\item{}
+\eit{}
+
+
+\subsection{SEM: {\color{blue} What went particularly well}}
+
+\begin{itemize}
+\item{Nothing to remark}
+\end{itemize}
+
+\subsection{SEM: {\color{red} What went particularly poorly}}
+
+\begin{itemize}
+\item{Nothing to remark}
+\end{itemize}
+
+\subsection{Coverage Analysis \footnotemark[1]}
+
+\hypertarget{coveragetable}{\;}
+
+\texfromfile{\SEM coverage/}{summarytable.tex}{\hspace{2cm}NpSurfaceCounter: python main\_script\_v2.py}
+\gap
+
+\fillin{What is surface coverage?  How does it compare to best run and/or related runs?}
+
+\hypertarget{spec}{\section{Spectrometer Protocol}}
+
+\begin{center}
+\begin{tabular}{| c | c |}
+ \hline
+ {\bf Use. Date} & XX/XX/2014 \\ \hline
+ {\bf \# Fibers used} & X \\ \hline
+ {\bf NP Batch} & 11-18\_B2 30nm diameter\footnotemark[2] \\ \hline
+ {\bf Final NP conc.} & .5 stock conc.  \\ \hline
+ {\bf Volume of NP solution} & 1mL \\ \hline
+\end{tabular}
+\end{center}
+\gap
+
+\footnotetext[1]{{\bf equiv} refers to the proportion of AuNPs confined to this stucture.  For example, super\_equiv is the estimated percentage of AuNPs confined very large aggregates.}
+\footnotetext[2]{30nm refers to batch expected diameter; recent results imply diameter is closer to 22nm.}
+
+\vspace{.3cm}
+
+\fillin{Any particulars about the spectrometer analysis} 
+
+\subsection{Spectrometer: {\color{blue} What went particularly well}}
+
+\begin{itemize}
+\item{No handling errors at all.}
+\end{itemize}
+
+\subsection{Spectrometer: {\color{red} What went particularly poorly}}
+
+\begin{itemize}
+\item{Nothing to remark}
+\end{itemize}
+
+
+\hypertarget{results}{\section{Results}}
+
+\subsection{Summary}
+
+\fillin{Summarize conclusions/results in succinct form}
+
+\subsection{Follow-up}
+
+\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% SWEAVE TREE .tex %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\texfromfile{./sweavesections/}{sweavetree.tex}{\hspace{2cm}Reports: python buildsweave.py (see -h for options)}
+
+% IF YOU WANT SWEAVETREE MANUALLY, COMMENT ABOVE, UNCOMMENT AND FILLIN BELOW
+%\includepdf[pages=1,pagecommand=\section{Data Analysis}\subsection{Fiber1/NPSAM}]{example.pdf}
+%\includepdf[pages=2-,pagecommand={}]{example.pdf}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% PYUVVIS RUN PARAMS .tex %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\texfromfile{\Analysis}{runparameters.tex}{\hspace{2cm}In root dir: gwuspec Datafiles/ Analysis/ -o -s}
+
+
+% Appendix
+\vspace{.65cm}
+\appendix
+{\huge \bf \noindent APPENDIX}
+
+% Related (DONT FORGET \_ in filename)
+\hypertarget{related}{\section{Related}}
+%\begin{itemize}
+%\report{October/10_8_NewSilanes_PMTS/Report/10_8_PTMS.pdf}{10\_8: Pure PMTS}
+%\end{itemize}
+\gap
+
+\section{Acronyms and Terminology} 
+\vspace{.1cm}
+
+% XXX: Make the first term the hyperlinked one
+\begin{itemize}[align=left]
+\define{AuNP}{Gold nanoparticle}
+
+\define{BSA}{Bovine Serum Albumin}
+
+\define{PBS}{Phosphate Buffered Saline- 0.01M pH 7.4 from Sigma Aldrich powder packet.}
+
+\define{TMSDE}{\href{http://www.sigmaaldrich.com/catalog/product/fluka/06666?lang=en&region=US}{\ttfamily(3-Trimethoxysilylpropyl)-diethylenetriamine}}
+
+\define{MPTMS}{\href{http://www.sigmaaldrich.com/catalog/product/aldrich/175617?lang=en&region=US}{\ttfamily(3-Mercaptopropyl)trimethoxysilane}}
+
+\define{PTMS}{\href{http://shop.gelest.com/Product.aspx?catnum=SIP6918.0&Index=0&TotalCount=1}{\ttfamily Propyltrimethoxysilane}}
+
+\define{ETMS}{\href{http://shop.gelest.com/Product.aspx?id=2170}{\ttfamily Ethyltrimethoxysilane}}
+
+\define{DTSSP}{\href{http://www.piercenet.com/product/dsp-lomants-reagent}{\ttfamily Water soluble DSP (Dithiobis[succinimidyl propionate])}}
+
+\end{itemize}
+
+% COVERAGE HISTOGRAMS
+\newpage
+\section{SEM Images and Histograms}
+\texfromfile{\SEM coverage/}{histsummary.tex}{\hspace{2cm}NpSurfaceCounter: python main\_script\_v2.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% END DOCUMENT    %%%
+%%%%%%%%%%%%%%%%%%%%%%%%   
+
+\end{document}

@@ -1,0 +1,341 @@
+\documentclass{article}
+
+%%% IMPORTS %%%
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{import}
+\usepackage{gensymb}
+\usepackage{xcolor}
+%\usepackage[pdftex]{graphicx} % R sweave takes this over
+\usepackage{scrextend}
+\usepackage{pdfpages}
+%\graphicspath{ {./images/} }
+\usepackage{subfigure}
+\usepackage[scriptsize]{caption}   % Set figure captions
+\usepackage{changepage} 
+\usepackage{multicol}   %May be deprecated
+\usepackage{enumitem}
+\usepackage{changepage} 
+\usepackage{geometry}
+\usepackage{hyperref} % For links in appendix
+\hypersetup{
+    colorlinks = false,
+    linkbordercolor = {white}
+    }
+ 
+\setlength\parindent{0pt} % NO INDENT THROUGHOUT DOC
+
+% Custom commands
+\input{../miscellaneous/commands.tex}
+
+% Path to datafiles
+\newcommand*{\Datafiles}{../../Datafiles/}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% BEGIN DOCUMENT  %%%%%%%%
+% Go to line 150 to add notes %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+
+\begin{document}
+
+%%% OPTIONAL TITLE (If not making composite report) %%%
+
+%\title{\Large \bf UNTITLED}
+%\author{Adam Hughes with contributions from Annie Matsko, Zhaowen Liu, Abel Rodriguez, Adam Hughes, Mark Reeves\\
+%Email:matsko@gwu.edu\\
+%Department of Physics, The George Washington University}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% FILL IN RUN PARAMETERS %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<tidy=TRUE, echo=FALSE>>=
+#replace PATH TO DIRECTORY
+path='../../Datafiles/Fiber4/NPSAM'
+
+#replace NUMBER OF LAST DATA FILE HERE
+bfile=0
+efile=NULL
+darkpattern="dark"
+
+# Starting/Ending wavelength
+lammin<-440 
+lammax<-680
+noise<-(2:6) #First five curves, excluding reference 
+@
+
+% Following chunk parses data, looks for darkfile, sets directories etc...
+<<tidy=TRUE, echo=FALSE>>=
+library(stringr)
+
+#Normalize path; add trailing "/"
+path = normalizePath(path)
+if (str_sub(path, -1,-1)!="/") path=str_c(path, "/")
+
+#If more than one darkfile exist an error will alert the user
+drkfil=list.files(path, pattern=darkpattern)
+if(length(drkfil) != 1)
+    stop('zero or multiple dark files found')
+drkfil=paste(path, drkfil, sep='')
+
+# Read in all files (including dark)
+# FIL IS DATAFILES
+datafiles=list.files(path, pattern="")
+datafiles=paste(path, datafiles, sep='')
+
+# Find index of dark file
+drkindex = grep(darkpattern, datafiles)
+
+# REplace with NA
+datafiles[[drkindex]]<-NA
+
+# Remove all instances of NA
+datafiles <- datafiles[!is.na(datafiles)]
+
+# DEFINE REF FILE AS 0 VALUE IN LIST
+reffil <- datafiles[1]
+datafiles = datafiles[2:length(datafiles)]
+
+#If efile NULL; set it to number of files in dataset
+if(is.null(efile)){
+   efile=length(datafiles)
+   }
+
+#Convert efile to int
+efile=as.integer(efile)
+
+#If efile is larger length fdatafilesil, error
+if(length(efile)>length(datafiles))
+    stop('length(efile) cannot exceed length(datafiles)')
+
+nfile=efile-bfile
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Majority of Analysis %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<tidy=TRUE,echo=FALSE>>=
+# create array of filenames
+ndex=c(bfile:efile)
+ndex=formatC(ndex,width=5,format="d",flag="0")
+#CHANGE THE START AND END INDICES TO DEFINE THE WAVELENGTH RANGE BETWEEN 440 and 680 nm
+dark<-read.table(drkfil, sep="\t", skip=18,nrows=2047)
+ref<-read.table(reffil, sep="\t", skip=18,nrows=2047)
+refback<-ref
+refback[,2]<-ref[,2]-dark[,2]
+wavelength=refback[,1]
+# x=1-refback[,2]/refback[,2]   delete this later
+@
+<<tidy=TRUE, echo=FALSE>>=
+#Build a dummy data frame to hold the spectral data. Creating a blank one 
+#saves run time over using cbind() to build the dataframe column by column
+#Notice here that each time the while loop executes, the data frame doubles
+#in size. That means instead of evoking cbind nfiles times, it is invoked a 
+#few more than N times, where 2^N = nfiles
+#reset rest (contains the number left over from nfile - 2^N)+2 to include dark, reference data.
+rest=nfile+2
+#make the dummy filled with dark values ... will be useful later
+ssp=data.frame(dark[,2])
+#keep ssp a single column long, dark data are accumulated in the data frame, 
+#spect
+spect=ssp
+#check that remainder, nfile - 2^N, is greater than 2
+while(rest>2){
+  sl=ssp # setup 1-dim dataframe
+# execute n times
+  n=as.integer(log(rest)/log(2)) 
+  rest=rest-2^n # how many columns are left to be filled?
+  for(i in 1:n){sl=cbind(sl,sl)} #fill columns in data frame
+  spect=cbind(spect,sl) # add in the newly created data frame columns
+}
+#Check if nfile is even, if so, add one more column
+if(as.integer(nfile/2)==nfile/2){spect=cbind(spect,ssp)}  
+# all done. This data frame can be copied and then filled as the data are 
+# read from the spectrometer files. Creating and filling saves processor time
+# over individually appending a new column to the data frame for each data set
+rownames(spect)=dark[,1] # assign row names to wavelength values in nm
+# Assign first two column names
+colnames(spect)[1]="Dark"
+colnames(spect)[2]="Ref."
+spect[,2]=ref[,2]  # store reference spectrum to column 2
+#trim spect to remove any extra columns
+#spect=spect[,1:nfile+3]
+@
+<<tidy=TRUE, echo=FALSE>>=
+options(width=60)
+#read the first 18 lines as header, then write to file
+# read and store file descriptor from SpectraSuite
+test=readLines(paste(datafiles[1],sep=""),n=17)
+# set template for time conversion
+w <- matrix(c(3600,60,1),ncol=1)
+# Read and convert time stamp from the first spectrum file
+  time=scan(datafiles[1],what="character",nmax=5,nlines=18,skip=2)
+  t0=matrix(as.numeric(unlist(strsplit(time[5],":"))),ncol=3,byrow=TRUE)%*%w
+#Get the remaining time stamps. The elapsed times will be the row headers in the data frame
+for(i in 1:nfile){
+  
+# Read and convert time stamp
+  time=scan(datafiles[(i)],what="character",nmax=5,nlines=18,skip=2)
+  tc=matrix(as.numeric(unlist(strsplit(time[5],":"))),ncol=3,byrow=TRUE)%*%w-t0
+  colnames(spect)[i+2]=tc
+}
+# trim any excess columns
+spect=spect[,1:(nfile+2)]
+@
+
+%%%%%%%%%%%%%%%%%%%
+%%% BEGIN TEXT %%%%
+%%%%%%%%%%%%%%%%%%%
+
+$\;$   % Add blank space so vspace is not ignored
+\vspace{.9cm}
+
+\fillin{\noindent Optional non step-by-step description} 
+\gap
+
+{\bf \noindent \normalsize Steps:}
+
+\begin{itemize}
+\item{step 1}
+\item{step 2}
+\end{itemize}
+
+{\bf \noindent \normalsize What went well}
+
+\begin{itemize}
+\item{Nothing to remark}
+\end{itemize}
+
+{\bf \noindent \normalsize What went poorly}
+
+\begin{itemize}
+\item{Nothing to remark}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% FILEPATH AND METADATA %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<echo=FALSE, tidy=TRUE, comment='File path:'>>=
+path
+@
+
+<<echo=FALSE, comment='', background='yellow', size='normalsize', tidy=TRUE>>=
+test=c(test,paste("total elapsed time = ", toString(tc), "s",sep=""))
+test[9] #Integration time
+test[11] #Boxcar
+test[10] #Spect avg (how to split out paranthesis)
+test[3]  #Time start
+test[18] #Time elapsed
+@
+
+\blfootnote{\bad{Warning:} Parameters shown from first saved datafile; may have been changed during the run.}
+
+<<tidy=TRUE, echo=FALSE>>=
+options(width=60)
+# Now fill the rest of the data frame, spect, with measured spectra. Raw data will be first stored in a .csv file, then later dark corrected, and then absorbance data are calculated and stored, each in their own .csv file. First the raw data:
+for(i in 1:nfile){
+# Read each spectrum and store in the data frame
+  s=read.table(datafiles[(i)], sep="\t", skip=18,nrows=2047)
+  spect[,i+2]=s[,2]
+}
+# store the raw data frame as csv
+write.table(spect, file = paste('./CSV_Files/',"RawData.csv",sep=""),sep=",",col.names=NA)  # store data frame
+@
+
+<<tidy=TRUE, echo=FALSE>>=
+options(width=60)
+# Now calculate and store the dark-corrected spectra.
+dark=spect[,1]
+spect=spect-dark
+spect[,1]=dark
+spect=signif(spect,5)
+write.table(spect, file = paste('./CSV_Files/',"DarkCorrData.csv",sep=""),sep=",",col.names=NA)  # store data frame
+@
+<<absspectall,echo=FALSE,fig.show='hide' >>=
+library(Bolstad2)
+options(width=60)
+# Get integers for setting xlabels on plots
+specmin=as.integer(lammin)
+specmax=as.integer(lammax)
+
+#Plot the processed dataframe
+plot(spect[,3]~wavelength,cex.main=2.5,cex.axis=2.5,cex.lab=2.5, main="(a) Raw Spectra",xlab="wavelength (nm)",ylab="Intensity",xlim=c(specmin,specmax), ylim=c(0,max(spect[,3:(2+nfile)])), type="l")
+cl<-rainbow(1.1*nfile)
+# integrate the spectral density plot for the reference data
+spectralpower=sintegral(wavelength,spect[,2])$int
+for(i in 1:nfile){
+  lines(spect[,(2+i)]~wavelength, lty = 1, col = cl[i+1])
+   # integrate each successive spectral density plot
+  spectralpower=c(spectralpower,sintegral(wavelength,spect[,(i+2)])$int)
+}
+@
+<<integral,echo=FALSE,fig.show='hide'>>=
+options(width=60)
+plot(spectralpower[2:(nfile+1)]~as.numeric(colnames(spect[,3:(nfile+2)])),cex.main=2.5,cex.axis=2.5,cex.lab=2.5, main="(b) Raw Spectral Power",xlab="Time (s)", ylab="")
+@
+
+<<tidy=TRUE, echo=FALSE>>=
+# Finally, calculate and store the absorbance spectra. All this is done with # column arithmetic on the data frame, spect.
+options(width=60)
+ref=spect[,2]
+ref=replace(ref,ref==0,1e6)
+spect=spect/ref
+spect[,1]=dark
+spect[,2]=ref
+spect=signif(spect,7)
+# spect[0:7,0:6]  # Show what you have done
+write.table(signif(spect,5), file = paste('./CSV_Files/',"RefCorrData.csv",sep=""),sep=",",col.names=NA)  # store data frame
+@
+<<noiselevel, echo=FALSE,fig.show='hide'>>=
+options(width=60)
+# find the indices of the values sought for min and max wavelength
+# The noise will be computed from the standard deviation of the data between 450 and 650 nm.
+minind=min(grep(lammin,rownames(spect)))
+maxind=max(grep(lammax,rownames(spect)))
+minabs=min(spect[minind:maxind,3:8])
+maxabs=max(spect[minind:maxind,3:8])
+
+plot(ref~wavelength,cex.main=2.5,cex.axis=2.5,cex.lab=2.5, main="(d) Noise (5 curves)",xlab="wavelength (nm)",ylab="", type="l",xlim=c(specmin, specmax),ylim=c(minabs,maxabs))
+cl<-rainbow(8)
+# calculate the noise level of the first 6 spectra
+for(i in 0:5){
+      noise[i]=sd(spect[minind:maxind,i+2])
+  lines(spect[minind:maxind,3+i]~wavelength[minind:maxind], lty = 1, col = cl[i+1])
+}
+@
+
+
+<<noiselevel2, echo=FALSE,fig.show='hide'>>=
+minabs=min(spect[minind:maxind,3:(2+nfile)])
+maxabs=max(spect[minind:maxind,3:(2+nfile)])
+plot(spect[,3]~wavelength,cex.main=2.5,cex.axis=2.5,cex.lab=2.5, main="(c) Relative Absorbance",xlab="wavelength (nm)",ylab="Linear Ratio", type="l",xlim=c(specmin, specmax),ylim=c(minabs,maxabs))
+cl<-rainbow(1.1*nfile)
+for(i in 1:nfile){
+  lines(spect[,2+i]~wavelength, lty = 1, col = cl[i+1])
+}
+for(i in 0:5){
+      noise[i]=sd(spect[minind:maxind,i+2])
+  lines(spect[minind:maxind,3+i]~wavelength[minind:maxind], lty = 1, lwd=2)
+}
+@
+
+%%%%%%%%%%%%%%%%%%%
+%%% QUAD PLOT  %%%%
+%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[h!]
+\centering
+\subfigure{\includegraphics[width=5.5cm]{figure/absspectall.pdf} }
+\subfigure{\includegraphics[width=5.5cm]{figure/integral.pdf} }
+\subfigure{\includegraphics[width=5.5cm]{figure/noiselevel2.pdf} }
+\subfigure{\includegraphics[width=5.5cm]{figure/noiselevel.pdf} }
+\caption{Dark corrected (a) raw spectra (b) raw spectral area (c) relative absorbance (linear ratio) (d) first five relative absorbance curves.  {\bf Note:} the black lines in (c) correspond to (d).}
+\label{quad}
+\end{figure}
+
+
+\end{document}
