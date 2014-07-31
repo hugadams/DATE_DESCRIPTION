@@ -203,17 +203,14 @@ $\;$   % Add blank space so vspace is not ignored
 \item{step 2}
 \end{itemize}
 
-{\bf \noindent \normalsize What went well}
+\gap
+\blf{Conclusions:}
 
-\begin{itemize}
-\item{Nothing to remark}
-\end{itemize}
-
-{\bf \noindent \normalsize What went poorly}
-
-\begin{itemize}
-\item{Nothing to remark}
-\end{itemize}
+\begin{enumerate}
+\item{}
+\sub{}
+\item{}
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% FILEPATH AND METADATA %%%%
