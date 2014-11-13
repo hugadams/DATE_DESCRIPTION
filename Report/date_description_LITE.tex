@@ -1,0 +1,301 @@
+\documentclass{article}
+
+%%% IMPORTS %%%
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{import}
+\usepackage{changepage} %For forcing table adjustmetns
+\usepackage{gensymb}
+\usepackage{xcolor}
+\usepackage[pdftex]{graphicx}
+\usepackage{scrextend}
+\usepackage{pdfpages}
+\graphicspath{ {./images/} }
+\usepackage{subfigure}
+\usepackage[scriptsize]{caption}   % Set figure captions
+\usepackage{changepage} 
+\usepackage{multicol}   %May be deprecated
+\usepackage{enumitem}
+\usepackage{xifthen}  %if/else for optional args
+\usepackage{geometry}
+\usepackage{hyperref} % For links in appendix
+\hypersetup{
+    colorlinks=true, %This is best setup for not getting werid behavior
+    linkcolor=black,
+    citecolor=black,
+    filecolor=black,
+    urlcolor=blue, 
+    }
+
+%%% INPUT SEVERAL COMMANDS FROM miscellaneous/commands.tex
+\input{miscellaneous/commands.tex}
+
+%%% Relative paths for composite document integration %%%
+\newcommand*{\Analysis}{../Analysis/}
+\newcommand*{\SEM}{../SEM/}
+\newcommand*{\Datafiles}{../Datafiles/}
+\newcommand*{\FiberData}{../../../}
+\newcommand*{\Papers}{../../../../Papers/}
+
+%%% Various hyperlinks to targets distributed in document
+\newcommand*{\refsem}{\hyperlink{sem}{\color{blue} \ttfamily Introduction}} 
+\newcommand*{\refexp}{\hyperlink{exp}{\color{blue} \ttfamily Experimental}} 
+\newcommand*{\refintro}{\hyperlink{intro}{\color{blue} \ttfamily SEM}} 
+\newcommand*{\refaunps}{\hyperlink{aunps}{\color{blue} \ttfamily AuNP Monolayers}} 
+\newcommand*{\refresults}{\hyperlink{results}{\color{blue} \ttfamily Results}} 
+\newcommand*{\refrelated}{\hyperlink{related}{\color{blue} \ttfamily Related Reports}} 
+
+% COVERAGE TABLE
+\newcommand*{\refcovtable}{\hyperlink{covtable}{\color{blue} \ttfamily Coverage Table}} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% BEGIN DOCUMENT  %%%
+%%%%%%%%%%%%%%%%%%%%%%%%    
+      
+\begin{document}
+\noindent
+
+\begin{center}
+
+\includegraphics[width=0.4\textwidth]{gwulogo}~\\[1cm]
+
+\textsc{\LARGE The George Washington University\vspace{.2cm}
+Physics Department}\\[.4cm]
+
+{\large \today}
+\vspace{.5cm}
+
+\hrule \vspace{.4cm}
+{ \huge \bfseries  
+
+%%% TITLE %%%%
+UNTITLED
+
+\vspace{0.2cm} }
+\hrule \vspace{1.5cm}
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Author:}\\
+
+%%%% AUTHOR NAME %%%%%
+\fancyname{Adam}{Hughes}\footnotemark[1]
+
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Advisor:} \\
+\fancyname{Dr.~Mark}{Reeves}\footnotemark[2]
+\end{flushright}
+\end{minipage}
+\end{center}
+
+\vspace{.4cm}
+
+%%%%% ABSTRACT %%%%%%
+\abstract{\fillin{
+Abstract goes here
+}}
+
+\vfill
+{\noindent {\bf Contributors:}} 
+%%%%% CONTRIBUTERS %%%%%%
+%\fancyname{Zhaowen}{Liu}, \fancyname{Maryam}{Raftari}
+\fancyname{Clay}{Morton}
+
+\footnotetext[1]{hugadams@gwmail.gwu.edu}
+\footnotetext[2]{reevesme@gwu.edu}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\hypertarget{intro}{\section{Introduction}}
+
+\fillin{Explanation of experiment and goals}
+
+\subsection{Hypothesized results}
+\fillin{What do you expect to happen?}
+
+\hypertarget{exp}{\section{Experimental and AuNP SAM notes}}
+
+
+\vspace{.3cm}
+
+\fillin{Any details about the experiment} 
+
+
+\vspace{.3cm}
+
+\fillin{Any details about the AuNP SMAS}
+
+
+\hypertarget{sem}{\section{SEM}}
+
+\subsection{Coverage Analysis \footnotemark[1]}
+
+\hypertarget{coveragetable}{\;}
+
+\texfromfile{\SEM coverage/}{summarytable.tex}{\hspace{2cm}NpSurfaceCounter: python main\_script\_v2.py}
+\gap
+
+\fillin{What is surface coverage?  How does it compare to best run and/or related runs?}
+
+ 
+\hypertarget{results}{\section{Results}}
+
+\subsection{Fiber-by-Fiber Summary}
+
+\gap
+\blf{Fiber 1}
+\bit
+\item{}
+\item{}
+\eit
+\gap
+
+\gap
+\blf{Fiber 2}
+\bit
+\item{}
+\item{}
+\eit
+\gap
+
+\gap
+\blf{Fiber 3}
+\bit
+\item{}
+\item{}
+\eit
+\gap
+
+\gap
+\blf{Fiber 4}
+\bit
+\item{}
+\item{}
+\eit
+\gap
+
+\gap
+\blf{Fiber 5}
+\bit
+\item{}
+\item{}
+\eit
+\gap
+
+\gap
+\blf{Fiber 6}
+\bit
+\item{}
+\item{}
+\eit
+\gap
+
+
+\subsection{Overall Conclusions}
+
+\fillin{Summarize conclusions/results in succinct form}
+
+\subsection{In regard to protein binding}
+
+\bit
+\item{}
+\item{}
+\eit
+
+\subsection{In regard to coating}
+
+\bit
+\item{}
+\item{}
+\eit
+
+\subsection{Other Conclusions/Points of interest}
+ 
+\bit
+\item{}
+\item{}
+\eit 
+
+\subsection{Follow-up}
+
+\begin{enumerate}
+\item{}
+\item{}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% SWEAVE TREE .tex %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\texfromfile{./sweavesections/}{sweavetree.tex}{\hspace{2cm}Reports: python buildsweave.py (see -h for options)}
+
+% IF YOU WANT SWEAVETREE MANUALLY, COMMENT ABOVE, UNCOMMENT AND FILLIN BELOW
+%\includepdf[pages=1,pagecommand=\section{Data Analysis}\subsection{Fiber1/NPSAM}]{example.pdf}
+%\includepdf[pages=2-,pagecommand={}]{example.pdf}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% PYUVVIS RUN PARAMS .tex %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\texfromfile{\Analysis}{runparameters.tex}{\hspace{2cm}In root dir: gwuspec Datafiles/ Analysis/ -o -s}
+
+
+% Appendix
+\vspace{.65cm}
+\appendix
+{\huge \bf \noindent APPENDIX}
+
+% Related (DONT FORGET \_ in filename)
+\hypertarget{related}{\section{Related}}
+%\begin{itemize}
+%\report{October/10_8_NewSilanes_PMTS/Report/10_8_PTMS.pdf}{10\_8: Pure PMTS}
+%\end{itemize}
+\gap
+
+\section{Acronyms and Terminology} 
+\vspace{.1cm}
+
+% XXX: Make the first term the hyperlinked one
+\begin{itemize}[align=left]
+\define{AuNP}{Gold nanoparticle}
+
+\define{BSA}{Bovine Serum Albumin}
+
+\define{PBS}{Phosphate Buffered Saline- 0.01M pH 7.4 from Sigma Aldrich powder packet.}
+
+\define{TMSDE}{\href{http://www.sigmaaldrich.com/catalog/product/fluka/06666?lang=en&region=US}{\ttfamily(3-Trimethoxysilylpropyl)-diethylenetriamine}}
+
+\define{MPTMS}{\href{http://www.sigmaaldrich.com/catalog/product/aldrich/175617?lang=en&region=US}{\ttfamily(3-Mercaptopropyl)trimethoxysilane}}
+
+\define{PTMS}{\href{http://shop.gelest.com/Product.aspx?catnum=SIP6918.0&Index=0&TotalCount=1}{\ttfamily Propyltrimethoxysilane}}
+
+\define{ETMS}{\href{http://shop.gelest.com/Product.aspx?id=2170}{\ttfamily Ethyltrimethoxysilane}}
+
+\define{DTSSP}{\href{http://www.piercenet.com/product/dsp-lomants-reagent}{\ttfamily Water soluble DSP (Dithiobis[succinimidyl propionate])}}
+
+\end{itemize}
+
+% COVERAGE HISTOGRAMS
+\newpage
+\section{SEM Images and Histograms}
+\texfromfile{\SEM coverage/}{histsummary.tex}{\hspace{2cm}NpSurfaceCounter: python main\_script\_v2.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% END DOCUMENT    %%%
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+% TOC (Have to sort of manually add it to TOC because it will put "References" twice if you make it a conventional section
+\addcontentsline{toc}{section}{E\; References}
+\newpage
+\bibliographystyle{unsrt}
+{\footnotesize\bibliography{\Dropbox Mendeley/Bibtex/library}}  %NO .bib   
+
+\end{document}
